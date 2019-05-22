@@ -1,0 +1,34 @@
+<template name="a">
+  <section>
+    <h1>A</h1>
+
+    <p>You are now on route A.</p>
+
+    <p>While this route was being rendered, FlowRouter set a new query param <code>foobar</code>.</p>
+
+    <p>After you click "Go to B", the click event bubbling up to the wrapping element in template A, <code>&lt;section&gt;</code> will set that query param to <code>null</code>, which will cause a very strange behavior on the <code>waitOn</code> hook in route B.</p>
+
+    <p>After clicking, observe the logging in your console, and pay attention on the <code>endWaiting</code>-block being run twice, after running <code>waitOn</code> block for both templates A and B. After that, Route B's <code>render()</code> gets run twice, once before the template B has been imported in <code>waitOn</code>, causing the error.</p>
+
+    <p><strong>You have now also succesfully broken the
+      app</strong> - <code>Template.b</code> failed to render and any further navigation is broken.</p>
+
+    <p>If you were to remove the <code>Template.layout</code> from being used in the router's <code>action()</code> hook's <code>this.render()</code>-call, you would get a more meaningful error message, explaining that template <code>B</code> is nowhere to be found. However, since we are using <code>layout</code>, we get an obscure error message like this</p>
+
+    <pre>
+      Error: Can't render undefined
+    at checkRenderContent (blaze.js?hash=51f4a3bdae106610ee48d8eff291f3628713d847:2285)
+    at contentAsFunc (blaze.js?hash=51f4a3bdae106610ee48d8eff291f3628713d847:2328)
+    at Object.Blaze.renderWithData (blaze.js?hash=51f4a3bdae106610ee48d8eff291f3628713d847:2401)
+    at BlazeRenderer.materialize (renderer.js:341)
+    at BlazeRenderer._load (renderer.js:258)
+    at BlazeRenderer.proceed (renderer.js:198)
+    at BlazeRenderer.startQueue (renderer.js:98)
+    at BlazeRenderer.render (renderer.js:90)
+    at Route.action [as _action] (main.js:40)
+    at Route.callAction (route.js:304)
+    </pre>
+
+    <a href="/b">Go to B</a>
+  </section>
+</template>
